@@ -42,10 +42,8 @@ const ui = {
         return m.request({
             method: "GET",
             url: "https://api.dictionaryapi.dev/api/v2/entries/en/" + word,
-        })
-        .then(function(result) {
+        }).then(function(result) {
             ui.result = result[0];
-            console.log(ui.result)
         }).catch(function(e) {
             ui.result = {error: "word not found"};
         })
