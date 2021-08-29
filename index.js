@@ -24,7 +24,7 @@ const textBox = {
 const error = {
     view: function (vnode) {
         const text = vnode.attrs.text;
-        return text ? [m("p.mt-2", text)] : [];
+        return text ? [m("p.mt-8.mx-12", text)] : [];
     }
 };
 
@@ -53,19 +53,19 @@ const phonetics = many("div.mt-2", phonetic);
 const definition = {
     view: function (vnode) {
         const example = vnode.attrs.example ? [
-            m("span.text-blue-600", " Example: "),
-            m("span.text-blue-600.italic", vnode.attrs.example)
+            m("br"),
+            m("span.italic.text-gray-700", vnode.attrs.example)
         ] : [];
-        return m("li", m("span", vnode.attrs.definition), example);
+        return m("li.mt-3", m("span", vnode.attrs.definition), example);
     }
 };
 
-const definitions = many("ol.list-decimal.list-inside", definition);
+const definitions = many("ol.list-decimal", definition);
 
 const partOfSpeech = {
     view: function (vnode) {
         const text = vnode.attrs.text;
-        return m("p.font-bold.mt-2", text);
+        return m("p.font-bold.mt-6", text);
     }
 };
 
@@ -83,23 +83,26 @@ const meanings = many("div", meaning);
 const origin = {
     view: function (vnode) {
         const text = vnode.attrs.text;
-        return text ? [m("p.font-bold.mt-2", "origin"), m("p", text)] : [];
+        return text ? [m("p.font-bold.mt-6", "origin"), m("p.mt-3", text)] : [];
     }
 };
 
 const ui = {
     view: function () {
         const components = [
-            m(textBox, {onchange: ev => ui.loadResult(ev.target.value)}),
+            m(
+                "div.mt-8.mx-12",
+                m(textBox, {onchange: ev => {ui.loadResult(ev.target.value); ev.target.blur();}}),
+                m(phonetics, {entries: ui.result.phonetics})
+            ),
             m(error, {text: ui.result.error}),
-            m(phonetics, {entries: ui.result.phonetics}),
-            m(meanings, {entries: ui.result.meanings}),
-            m(origin, {text: ui.result.origin})
+            m(
+                "div.mb-8.ml-12.mr-8",
+                m(meanings, {entries: ui.result.meanings}),
+                m(origin, {text: ui.result.origin})
+            )
         ];
-        return m(
-            "div.min-h-screen.min-w-screen.bg-gray-100",
-            m("div.py-4.px-8.max-w-2xl.m-auto", components)
-        );
+        return m("div.m-auto", components);
     },
 
     result: {},
@@ -116,4 +119,5 @@ const ui = {
     }
 };
 
+document.body.classList.add("bg-gray-100");
 m.mount(document.body, ui);
