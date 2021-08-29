@@ -95,8 +95,11 @@ const ui = {
             m(phonetics, {entries: ui.result.phonetics}),
             m(meanings, {entries: ui.result.meanings}),
             m(origin, {text: ui.result.origin})
-        ]
-        return m("div.my-4.mx-8.max-w-4xl", components);
+        ];
+        return m(
+            "div.min-h-screen.min-w-screen.bg-gray-100",
+            m("div.py-4.px-8.max-w-2xl.m-auto", components)
+        );
     },
 
     result: {},
@@ -112,7 +115,5 @@ const ui = {
         })
     }
 };
-
-document.body.classList.add("bg-gray-100");
 
 m.mount(document.body, ui);
