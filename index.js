@@ -24,7 +24,7 @@ const textBox = {
 const error = {
     view: function (vnode) {
         const text = vnode.attrs.text;
-        return text ? [m("p.mt-8.mx-12", text)] : [];
+        return text ? [m("p.mt-8", text)] : [];
     }
 };
 
@@ -89,20 +89,15 @@ const origin = {
 
 const ui = {
     view: function () {
+        const onchange = ev => {ui.loadResult(ev.target.value); ev.target.blur();};
         const components = [
-            m(
-                "div.mt-8.mx-12",
-                m(textBox, {onchange: ev => {ui.loadResult(ev.target.value); ev.target.blur();}}),
-                m(phonetics, {entries: ui.result.phonetics})
-            ),
-            m(error, {text: ui.result.error}),
-            m(
-                "div.mb-8.ml-12.mr-8",
-                m(meanings, {entries: ui.result.meanings}),
-                m(origin, {text: ui.result.origin})
-            )
+            m(textBox, {onchange}),
+            m(phonetics, {entries: ui.result.phonetics}),
+            m(meanings, {entries: ui.result.meanings}),
+            m(origin, {text: ui.result.origin}),
+            m(error, {text: ui.result.error})
         ];
-        return m("div.m-auto", components);
+        return m("div.m-auto.my-8.mx-12", components);
     },
 
     result: {},
