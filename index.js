@@ -97,7 +97,7 @@ const ui = {
             m(origin, {text: ui.result.origin}),
             m(error, {text: ui.result.error})
         ];
-        return m("div.m-auto.my-8.mx-12", components);
+        return m("div.max-w-xl.m-auto", m("div.my-8.mx-12", components));
     },
 
     result: {},
