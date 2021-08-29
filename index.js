@@ -28,6 +28,13 @@ const error = {
     }
 };
 
+const transcription = {
+    view: function (vnode) {
+        const text = vnode.attrs.text;
+        return text ? [m("span", text + " ")] : [];
+    }
+};
+
 const player = {
     view: function (vnode) {
         const src = vnode.attrs.src;
@@ -44,7 +51,10 @@ const player = {
 
 const phonetic = {
     view: function (vnode) {
-        return [m("span", vnode.attrs.text + " "), m(player, {src: vnode.attrs.audio})];
+        return [
+            m(transcription, {text: vnode.attrs.text}),
+            m(player, {src: vnode.attrs.audio})
+        ];
     }
 };
 
@@ -108,6 +118,7 @@ const ui = {
             url: "https://api.dictionaryapi.dev/api/v2/entries/en/" + word,
         }).then(function(result) {
             ui.result = result[0];
+            console.log(ui.result);
         }).catch(function(e) {
             ui.result = {error: "Word not found."};
         })
