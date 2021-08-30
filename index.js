@@ -13,9 +13,11 @@ const textBox = {
             "input",
             {
                 type: "text",
+                value: vnode.attrs.value,
                 onchange: vnode.attrs.onchange,
                 class: "px-2 py-1 placeholder-gray-400 rounded border border-gray-400 w-full",
-                placeholder: "Enter a word here"
+                placeholder: "Enter a word here",
+                autocapitalize: "none"
             }
         );
     }
@@ -99,9 +101,13 @@ const origin = {
 
 const ui = {
     view: function () {
-        const onchange = ev => {ui.loadResult(ev.target.value); ev.target.blur();};
+        const onchange = function (ev) {
+            ui.query = ev.target.value;
+            ui.loadResult();
+            ev.target.blur();
+        };
         const components = [
-            m(textBox, {onchange}),
+            m(textBox, {onchange, value: ui.query}),
             m(phonetics, {entries: ui.result.phonetics}),
             m(meanings, {entries: ui.result.meanings}),
             m(origin, {text: ui.result.origin}),
@@ -110,15 +116,17 @@ const ui = {
         return m("div.max-w-xl.m-auto", m("div.my-8.mx-12", components));
     },
 
+    query: "",
+
     result: {},
 
-    loadResult: function (word) {
+    loadResult: function () {
         return m.request({
             method: "GET",
-            url: "https://api.dictionaryapi.dev/api/v2/entries/en/" + word,
+            url: "https://api.dictionaryapi.dev/api/v2/entries/en/" + ui.query,
         }).then(function(result) {
             ui.result = result[0];
-            console.log(ui.result);
+            ui.query = ui.result.word || ui.query;
         }).catch(function(e) {
             ui.result = {error: "Word not found."};
         })
