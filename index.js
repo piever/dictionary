@@ -1,3 +1,24 @@
+// model
+const model = {
+    results: [],
+    selectedResult: 0,
+    error: "",
+    loadResults: function (query) {
+        return m.request({
+            method: "GET",
+            url: "https://api.dictionaryapi.dev/api/v2/entries/en/" + query,
+        }).then(function(results) {
+            model.results = results;
+            model.selectedResult = 0;
+            model.error = "";
+        }).catch(function(e) {
+            model.error = "Word not found.";
+            model.results = [];
+        })
+    }
+}
+
+// view
 function many(tag, component) {
     return {
         view: function (vnode) {
@@ -99,39 +120,48 @@ const origin = {
     }
 };
 
-const ui = {
-    view: function () {
-        const onchange = function (ev) {
-            ui.query = ev.target.value;
-            ui.loadResult();
-            ev.target.blur();
-        };
-        const components = [
-            m(textBox, {onchange, value: ui.query}),
-            m(phonetics, {entries: ui.result.phonetics}),
-            m(meanings, {entries: ui.result.meanings}),
-            m(origin, {text: ui.result.origin}),
-            m(error, {text: ui.result.error})
-        ];
-        return m("div.max-w-xl.m-auto", m("div.my-8.mx-12", components));
-    },
+const backgroundColor = "bg-gray-100"
 
-    query: "",
-
-    result: {},
-
-    loadResult: function () {
-        return m.request({
-            method: "GET",
-            url: "https://api.dictionaryapi.dev/api/v2/entries/en/" + ui.query,
-        }).then(function(result) {
-            ui.result = result[0];
-            ui.query = ui.result.word || ui.query;
-        }).catch(function(e) {
-            ui.result = {error: "Word not found."};
-        })
+const tabs = {
+    view: function (vnode) {
+        const results = vnode.attrs.results;
+        const headers = results.map(function (result, i) {
+            const bg = i == model.selectedResult ? "bg-white.shadow" : backgroundColor;
+            return m(
+                "li." + bg,
+                {onclick: ev => {model.selectedResult = i;}},
+                m(
+                    "a.font-bold.inline-block.cursor-pointer.p-2.hover:bg-gray-200",
+                    result.word || "",
+                    m("sup", i + 1)
+                )
+            );
+        });
+        const navBar = m("ul.flex", headers);
+        const contents = results.map(function (result, i) {
+            return m("div", {hidden: model.selectedResult != i}, [
+                m(phonetics, {entries: result.phonetics}),
+                m(meanings, {entries: result.meanings}),
+                m(origin, {text: result.origin})
+            ]);
+        });
+        return m("div", navBar, contents);
     }
 };
 
-document.body.classList.add("bg-gray-100");
+const ui = {
+    view: function () {
+        const components = [
+            m(textBox, {onchange: ev => {
+                model.loadResults(ev.target.value);
+                ev.target.blur();
+            }}),
+            m(tabs, {results: model.results}),
+            m(error, {text: model.error})
+        ];
+        return m("div.w-screen", m("div.max-w-xl.m-auto", m("div.my-8.mx-12", components)));
+    },
+};
+
+document.body.classList.add(backgroundColor);
 m.mount(document.body, ui);
