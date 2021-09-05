@@ -47,7 +47,7 @@ const textBox = {
 const error = {
     view: function (vnode) {
         const text = vnode.attrs.text;
-        return text ? [m("p.mt-8", text)] : [];
+        return text ? [m("p.mt-8.mx-2", text)] : [];
     }
 };
 
@@ -128,18 +128,18 @@ const tabs = {
         const headers = results.map(function (result, i) {
             const bg = i == model.selectedResult ? "bg-white.shadow" : backgroundColor;
             return m(
-                "li." + bg,
+                "li.rounded." + bg,
                 {onclick: ev => {model.selectedResult = i;}},
                 m(
-                    "a.font-bold.inline-block.cursor-pointer.p-2.hover:bg-gray-200",
+                    "a.font-bold.inline-block.cursor-pointer.p-2.rounded",
                     result.word || "",
                     m("sup", i + 1)
                 )
             );
         });
-        const navBar = m("ul.flex", headers);
+        const navBar = m("ul.flex.flex-wrap.mt-2", headers);
         const contents = results.map(function (result, i) {
-            return m("div", {hidden: model.selectedResult != i}, [
+            return m("div.mx-2", {hidden: model.selectedResult != i}, [
                 m(phonetics, {entries: result.phonetics}),
                 m(meanings, {entries: result.meanings}),
                 m(origin, {text: result.origin})
@@ -159,7 +159,7 @@ const ui = {
             m(tabs, {results: model.results}),
             m(error, {text: model.error})
         ];
-        return m("div.w-screen", m("div.max-w-xl.m-auto", m("div.my-8.mx-12", components)));
+        return m("div.w-screen", m("div.max-w-xl.m-auto", m("div.my-8.mx-10", components)));
     },
 };
 
