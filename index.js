@@ -1,12 +1,13 @@
 // model
 const model = {
+    query: "",
     results: [],
     selectedResult: 0,
     error: "",
-    loadResults: function (query) {
-        return m.request({
+    loadResults: function () {
+        m.request({
             method: "GET",
-            url: "https://api.dictionaryapi.dev/api/v2/entries/en/" + query,
+            url: "https://api.dictionaryapi.dev/api/v2/entries/en/" + model.query,
         }).then(function(results) {
             model.results = results;
             model.selectedResult = 0;
@@ -14,7 +15,11 @@ const model = {
         }).catch(function(e) {
             model.error = "Word not found.";
             model.results = [];
-        })
+        });
+    },
+    updateQuery: function (query) {
+        model.query = query;
+        model.loadResults();
     }
 }
 
@@ -27,29 +32,6 @@ function many(tag, component) {
         }
     };
 }
-
-const textBox = {
-    view: function (vnode) {
-        return m(
-            "input",
-            {
-                type: "text",
-                value: vnode.attrs.value,
-                onchange: vnode.attrs.onchange,
-                class: "px-2 py-1 placeholder-gray-400 rounded border border-gray-400 w-full",
-                placeholder: "Enter a word here",
-                autocapitalize: "none"
-            }
-        );
-    }
-};
-
-const error = {
-    view: function (vnode) {
-        const text = vnode.attrs.text;
-        return text ? [m("p.mt-8.mx-2", text)] : [];
-    }
-};
 
 const transcription = {
     view: function (vnode) {
@@ -122,9 +104,9 @@ const origin = {
 
 const backgroundColor = "bg-gray-100"
 
-const tabs = {
-    view: function (vnode) {
-        const results = vnode.attrs.results;
+const results = {
+    view: function () {
+        const results = model.results;
         const headers = results.map(function (result, i) {
             const bg = i == model.selectedResult ? "bg-white.shadow" : backgroundColor;
             return m(
@@ -149,16 +131,34 @@ const tabs = {
     }
 };
 
+const error = {
+    view: function () {
+        const text = model.error;
+        return text ? [m("p.mt-6.mx-2", text)] : [];
+    }
+};
+
+const input = {
+    view: function () {
+        return m(
+            "input.px-2.py-1.placeholder-gray-400.rounded.border.border-gray-400.w-full",
+            {
+                type: "text",
+                value: model.query,
+                onchange: ev => {
+                    model.updateQuery(ev.target.value);
+                    ev.target.blur();
+                },
+                placeholder: "Enter a word here",
+                autocapitalize: "none"
+            }
+        );
+    }
+};
+
 const ui = {
     view: function () {
-        const components = [
-            m(textBox, {onchange: ev => {
-                model.loadResults(ev.target.value);
-                ev.target.blur();
-            }}),
-            m(tabs, {results: model.results}),
-            m(error, {text: model.error})
-        ];
+        const components = [m(input), m(results), m(error)];
         return m("div.w-screen", m("div.max-w-xl.m-auto", m("div.my-8.mx-10", components)));
     },
 };
