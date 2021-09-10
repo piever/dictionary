@@ -69,7 +69,7 @@ const definition = {
     view: function (vnode) {
         const example = vnode.attrs.example ? [
             m("br"),
-            m("span.italic.text-gray-700", vnode.attrs.example)
+            m("span.italic.text-gray-700.dark:text-gray-400", vnode.attrs.example)
         ] : [];
         return m("li.mt-3", m("span", vnode.attrs.definition), example);
     }
@@ -102,13 +102,13 @@ const origin = {
     }
 };
 
-const backgroundColor = "bg-gray-100"
+const backgroundColors = ["bg-gray-100", "dark:bg-gray-800"];
 
 const results = {
     view: function () {
         const results = model.results;
         const headers = results.map(function (result, i) {
-            const bg = i == model.selectedResult ? "bg-white.shadow" : backgroundColor;
+            const bg = i == model.selectedResult ? "bg-white.dark:bg-black.shadow" : backgroundColors.join(".");
             return m(
                 "li.rounded." + bg,
                 {onclick: ev => {model.selectedResult = i;}},
@@ -141,7 +141,7 @@ const error = {
 const input = {
     view: function () {
         return m(
-            "input.px-2.py-1.placeholder-gray-400.rounded.border.border-gray-400.w-full",
+            "input.px-2.py-1.dark:bg-black.placeholder-gray-400.dark:place-holder-gray-700.rounded.border.border-gray-400.w-full",
             {
                 type: "text",
                 value: model.query,
@@ -159,9 +159,9 @@ const input = {
 const ui = {
     view: function () {
         const components = [m(input), m(results), m(error)];
-        return m("div.w-screen", m("div.max-w-xl.m-auto", m("div.my-8.mx-10", components)));
+        return m("div.w-screen", m("div.max-w-xl.m-auto", m("div.my-8.mx-10.dark:text-white", components)));
     },
 };
 
-document.body.classList.add(backgroundColor);
+document.body.classList.add(...backgroundColors);
 m.mount(document.body, ui);
