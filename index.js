@@ -19,7 +19,7 @@ const model = {
     },
     updateQuery: function (query) {
         model.query = query;
-        model.loadResults();
+        model.query && model.loadResults();
     }
 }
 
