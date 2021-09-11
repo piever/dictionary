@@ -102,7 +102,7 @@ const origin = {
     }
 };
 
-const backgroundColors = ["bg-gray-100", "dark:bg-gray-800"];
+const backgroundColors = ["bg-gray-200", "dark:bg-gray-800"];
 
 const results = {
     view: function () {
