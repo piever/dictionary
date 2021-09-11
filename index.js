@@ -102,13 +102,15 @@ const origin = {
     }
 };
 
-const backgroundColors = ["bg-gray-200", "dark:bg-gray-800"];
+const backgroundColors = ["bg-sepia", "dark:bg-gray-800"];
 
 const results = {
     view: function () {
         const results = model.results;
         const headers = results.map(function (result, i) {
-            const bg = i == model.selectedResult ? "bg-white.dark:bg-black.shadow" : backgroundColors.join(".");
+            const activeClass = "bg-floral-white.dark:bg-black.shadow";
+            const inactiveClass = "text-gray-600.dark:text-gray-400"
+            const bg = i == model.selectedResult ? activeClass: inactiveClass;
             return m(
                 "li.rounded." + bg,
                 {onclick: ev => {model.selectedResult = i;}},
@@ -141,7 +143,7 @@ const error = {
 const input = {
     view: function () {
         return m(
-            "input.px-2.py-1.dark:bg-black.placeholder-gray-400.dark:place-holder-gray-700.rounded.border.border-gray-400.w-full",
+            "input.px-2.py-1.bg-floral-white.dark:bg-black.placeholder-gray-600.dark:placeholder-gray-400.rounded.border.border-gray-400.w-full",
             {
                 type: "text",
                 value: model.query,
